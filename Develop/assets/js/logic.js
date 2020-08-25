@@ -31,11 +31,40 @@ function startQuiz() {
 function getQuestion() {
   // get current question object from array
   // update title with current question
+  document.getElementById("question-title").textContent = questions[0].title;
+
+  // create choices
+  let ol = document.createElement("ol");
+  document.getElementById("choices").appendChild(ol);
+
+  for (var i = 0; i < questions[0].choices.length; i++) {
+    document.getElementById(
+      "choices"
+    ).firstChild.innerHTML += `<button><li>${questions[0].choices[i]}</li></button>`;
+
+    var buttonChoices = document.getElementById("choices").children[0].children[
+      i
+    ];
+
+    buttonChoices.addEventListener("click", function (e) {
+      console.log(e.target.value);
+    });
+  }
+
   // clear out any old question choices
+
   // loop over choices
   // create new button for each choice
   // attach click event listener to each choice
+
+  console.log(buttonChoices);
+
   // display on the page
+}
+
+function choiceClick(e) {
+  e.preventDefault();
+  console.log(e.target.value);
 }
 
 function questionClick() {
@@ -69,7 +98,7 @@ function clockTick() {
     if (time === 0) {
       clearInterval(timerInterval);
     }
-  }, 20);
+  }, 1000);
   // check if user ran out of time
 }
 
