@@ -26,6 +26,10 @@ function startQuiz() {
   clockTick();
 
   getQuestion();
+
+  var buttonChoices = document.getElementsByClassName("choiceBtn");
+
+  clickEvent(buttonChoices);
 }
 
 function getQuestion() {
@@ -40,15 +44,7 @@ function getQuestion() {
   for (var i = 0; i < questions[0].choices.length; i++) {
     document.getElementById(
       "choices"
-    ).firstChild.innerHTML += `<button><li>${questions[0].choices[i]}</li></button>`;
-
-    var buttonChoices = document.getElementById("choices").children[0].children[
-      i
-    ];
-
-    buttonChoices.addEventListener("click", function (e) {
-      console.log(e.target.value);
-    });
+    ).firstChild.innerHTML += `<button class="choiceBtn"><li>${questions[0].choices[i]}</li></button>`;
   }
 
   // clear out any old question choices
@@ -57,10 +53,20 @@ function getQuestion() {
   // create new button for each choice
   // attach click event listener to each choice
 
-  console.log(buttonChoices);
-
   // display on the page
 }
+
+function clickEvent(array) {
+  for (i = 0; i < array.length; i++) {
+    array[i].addEventListener("click", function (e) {
+      e.preventDefault();
+      console.log(e.target.innerHTML);
+    });
+  }
+}
+
+// var buttonChoices = document.getElementsByClassName("choiceBtn");
+// console.log(buttonChoices);
 
 function choiceClick(e) {
   e.preventDefault();
