@@ -22,13 +22,11 @@ function startQuiz() {
   // un-hide questions section
   questionsEl.classList.remove("hide");
   // start timer
-  // show starting time
   clockTick();
-
+  // show questions
   getQuestion();
-
+  // show choices
   var buttonChoices = document.getElementsByClassName("choiceBtn");
-
   clickEvent(buttonChoices);
 }
 
@@ -36,41 +34,29 @@ function getQuestion() {
   // get current question object from array
   // update title with current question
   document.getElementById("question-title").textContent = questions[0].title;
-
   // create choices
   let ol = document.createElement("ol");
   document.getElementById("choices").appendChild(ol);
-
+  // loop over choices
+  // create new button for each choice
   for (var i = 0; i < questions[0].choices.length; i++) {
     document.getElementById(
       "choices"
     ).firstChild.innerHTML += `<button class="choiceBtn"><li>${questions[0].choices[i]}</li></button>`;
   }
-
-  // clear out any old question choices
-
-  // loop over choices
-  // create new button for each choice
-  // attach click event listener to each choice
-
-  // display on the page
 }
 
 function clickEvent(array) {
+  let questionsNum = 1;
+  // attach click event listener to each choice
   for (i = 0; i < array.length; i++) {
     array[i].addEventListener("click", function (e) {
       e.preventDefault();
       console.log(e.target.innerHTML);
+      document.getElementById("question-title").textContent =
+        questions[questionsNum].title;
     });
   }
-}
-
-// var buttonChoices = document.getElementsByClassName("choiceBtn");
-// console.log(buttonChoices);
-
-function choiceClick(e) {
-  e.preventDefault();
-  console.log(e.target.value);
 }
 
 function questionClick() {
