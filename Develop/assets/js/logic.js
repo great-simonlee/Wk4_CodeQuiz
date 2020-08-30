@@ -1,6 +1,10 @@
+// user's answers
+var userAnswers = [];
+var score = [];
+
 // variables to keep track of quiz state
 var currentQuestionIndex = 0;
-var time = questions.length * 15;
+var time = (questions.length - 1) * 15;
 var timerId;
 
 // variables to reference DOM elements
@@ -11,6 +15,8 @@ var submitBtn = document.getElementById("submit");
 var startBtn = document.getElementById("start");
 var initialsEl = document.getElementById("initials");
 var feedbackEl = document.getElementById("feedback");
+var endQuestionScreen = document.getElementById("end-screen");
+var finalScore = document.getElementById("final-score");
 
 // sound effects
 var sfxRight = new Audio("assets/sfx/correct.wav");
@@ -36,48 +42,78 @@ function getQuestion() {
   document.getElementById("question-title").textContent = questions[0].title;
   // create choices
   let ol = document.createElement("ol");
-  document.getElementById("choices").appendChild(ol);
+  choicesEl.appendChild(ol);
   // loop over choices
   // create new button for each choice
   for (var i = 0; i < questions[0].choices.length; i++) {
-    document.getElementById(
-      "choices"
-    ).firstChild.innerHTML += `<button class="choiceBtn"><li>${questions[0].choices[i]}</li></button>`;
+    choicesEl.firstChild.innerHTML += `<button class="choiceBtn"><li>${questions[0].choices[i]}</li></button>`;
   }
 }
 
 function clickEvent(array) {
-  let questionsNum = 1;
+  var questionsNum = 1;
   // attach click event listener to each choice
   for (i = 0; i < array.length; i++) {
+    // add eventlistener on each button
     array[i].addEventListener("click", function (e) {
       e.preventDefault();
-      console.log(e.target.innerHTML);
+      // change the questions
       document.getElementById("question-title").textContent =
         questions[questionsNum].title;
+
+      // change the choices
+      for (j = 0; j < questions[questionsNum].choices.length; j++) {
+        choicesEl.children[0].children[
+          j
+        ].innerHTML = `<li>${questions[questionsNum].choices[j]}</li>`;
+      }
+      questionsNum += 1;
+      userAnswers.push(e.target.innerHTML);
+      questionClick(userAnswers);
+      // close questions
+      if (userAnswers.length == 5) {
+        choicesEl.classList.add("hide");
+        endQuestionScreen.classList.remove("hide");
+      }
     });
   }
 }
 
-function questionClick() {
+function questionClick(array) {
   // check if user guessed wrong
-  // penalize time
-  // display new time on page
-  // play "wrong" sound effect
-  // else
-  // play "right" sound effect
-  // flash right/wrong feedback on page for half a second
-  // move to next question
-  // check if we've run out of questions
-  // quizEnd
-  // else
-  // getQuestion
+  if (array[array.length - 1] == questions[array.length - 1].answer) {
+    feedbackEl.classList.remove("hide");
+    feedbackEl.innerHTML = "Correct!";
+    // play "right" sound effect
+    sfxRight.play();
+    // flash the result to each question
+    removeFeedback(feedbackEl);
+  } else {
+    feedbackEl.classList.remove("hide");
+    feedbackEl.innerHTML = "Wrong!";
+    // penalize time  // display new time on page
+    time -= 10;
+    // play "wrong" sound effect
+    sfxWrong.play();
+    // flash the result to each question
+    removeFeedback(feedbackEl);
+  }
+
+  // end quiz
+  quizEnd();
+}
+
+function removeFeedback(e) {
+  setTimeout(function () {
+    e.classList.add("hide");
+  }, 500);
 }
 
 function quizEnd() {
   // stop timer
   // show end screen
   // show final score
+  finalScore.innerHTML = time - 1;
   // hide questions section
 }
 
@@ -87,7 +123,7 @@ function clockTick() {
     time--;
     timerEl.textContent = time;
 
-    if (time === 0) {
+    if (time === 0 || userAnswers.length == 5) {
       clearInterval(timerInterval);
     }
   }, 1000);
@@ -96,11 +132,21 @@ function clockTick() {
 
 function saveHighscore() {
   // get value of input box
+  var username = initialsEl.value;
   // make sure value wasn't empty
+  if (username == "" || username.length > 3) {
+    alert("Initials should not be empty or greater than 3 letters");
+  } else {
+    score.initials = username;
+    score.score = time;
+  }
   // get saved scores from localstorage, or if not any, set to empty array
+  console.log(score);
   // format new score object for current user
   // save to localstorage
+  localStorage.setItem("score", JSON.stringify(score));
   // redirect to next page
+  // window.location.replace("./highscores.html");
 }
 
 function checkForEnter(event) {
