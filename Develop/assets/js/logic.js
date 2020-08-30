@@ -144,9 +144,10 @@ function saveHighscore() {
   console.log(score);
   // format new score object for current user
   // save to localstorage
-  localStorage.setItem("score", JSON.stringify(score));
+  localStorage.setItem("initials", JSON.stringify(score.initials));
+  localStorage.setItem("score", JSON.stringify(score.score));
   // redirect to next page
-  // window.location.replace("./highscores.html");
+  window.location.replace("./highscores.html");
 }
 
 function checkForEnter(event) {
